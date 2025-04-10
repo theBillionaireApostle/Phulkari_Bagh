@@ -3,7 +3,7 @@ import dbConnect from "@/lib/db"
 import Product from "@/lib/models/Product"
 import { NextResponse } from "next/server"
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Record<string, string> }) {
   try {
     await dbConnect()
     const product = await Product.findById(params.id)
@@ -17,7 +17,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Record<string, string> }) {
   try {
     await dbConnect()
     const data = await request.json()
@@ -32,7 +32,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Record<string, string> }) {
   try {
     await dbConnect()
     const product = await Product.findByIdAndDelete(params.id)

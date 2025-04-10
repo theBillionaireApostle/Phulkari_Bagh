@@ -366,5 +366,3 @@ const modalStyles: Record<string, React.CSSProperties> = {
     marginBottom: "1rem",
   },
 };
-
-export { headerStyles, footerStyles, modalStyles };

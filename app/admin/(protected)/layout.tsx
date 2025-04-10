@@ -3,7 +3,6 @@
 import { ReactNode } from "react"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-import Link from "next/link"
 import jwt from "jsonwebtoken"
 import "../../admin/admin.css" // Import your CSS file for admin styles
 
@@ -28,17 +27,15 @@ export default async function ProtectedAdminLayout({ children }: AdminLayoutProp
 
   try {
     jwt.verify(token, SECRET_KEY)
-  } catch (err) {
+  } catch {
     redirect("/admin/login")
   }
 
   return (
     <html lang="en">
       <body>
-        
-          {/* Main Content Area */}
-          <main className="admin-main">{children}</main>
-        
+        {/* Main Content Area */}
+        <main className="admin-main">{children}</main>
       </body>
     </html>
   )

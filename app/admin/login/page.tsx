@@ -194,30 +194,37 @@ export default function AdminLoginPage() {
   );
 }
 
-// Inline styles using a style object.
+/**
+ * 
+ * Updated Styles
+ * 
+ */
 const styles: Record<string, React.CSSProperties> = {
   container: {
+    // Full height minus header (70px) and footer (70px) for perfect vertical centering
+    minHeight: "calc(100vh - 140px)",
     display: "flex",
-    justifyContent: "center",
     alignItems: "center",
-    minHeight: "calc(100vh - 140px)", // leaving space for header and footer
+    justifyContent: "center",
+    // Provide uniform padding to avoid overlapping header/footer
+    paddingTop: "70px",   // space for fixed header
+    paddingBottom: "70px",// space for fixed footer
     backgroundColor: "#f9fafb",
-    padding: "1rem",
-    marginTop: "70px", // header height
-    marginBottom: "70px", // footer height (approx.)
   },
   loginCard: {
     backgroundColor: "#fff",
     width: "100%",
-    maxWidth: "400px",
+    maxWidth: "450px",
     padding: "2rem",
     borderRadius: "8px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    margin: "0 1rem", // small horizontal margin for mobile screens
   },
   title: {
     marginBottom: "1.5rem",
-    fontSize: "1.5rem",
+    fontSize: "1.6rem",
     textAlign: "center",
+    fontWeight: 700,
   },
   errorText: {
     color: "#d90429",
@@ -228,25 +235,24 @@ const styles: Record<string, React.CSSProperties> = {
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: "1rem",
+    gap: "1.25rem",
   },
   fieldGroup: {
     display: "flex",
     flexDirection: "column",
-    gap: "0.5rem",
+    gap: "0.3rem",
   },
   label: {
-    fontWeight: 500,
+    fontWeight: 600,
   },
   input: {
-    padding: "0.5rem",
+    padding: "0.6rem",
     borderRadius: "4px",
     border: "1px solid #ccc",
-    outline: "none",
     fontSize: "1rem",
   },
   button: {
-    padding: "0.75rem 1.5rem",
+    padding: "0.8rem 1.5rem",
     borderRadius: "4px",
     fontSize: "1rem",
     fontWeight: 600,
@@ -298,6 +304,10 @@ const footerStyles: Record<string, React.CSSProperties> = {
     bottom: 0,
     left: 0,
     width: "100%",
+    height: "70px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
   },
   text: {
     margin: 0,
@@ -352,6 +362,8 @@ const modalStyles: Record<string, React.CSSProperties> = {
     color: "#d90429",
     textAlign: "center",
     marginBottom: "1rem",
+    fontSize: "1rem",
+    lineHeight: "1.4",
   },
   modalButton: {
     padding: "0.5rem 1rem",
@@ -360,6 +372,8 @@ const modalStyles: Record<string, React.CSSProperties> = {
     border: "none",
     borderRadius: "4px",
     cursor: "pointer",
+    margin: "0 auto",
+    display: "block",
   },
   modalTitle: {
     textAlign: "center",

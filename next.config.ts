@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
     // WARNING: This setting bypasses type checking during production builds
     ignoreBuildErrors: true,
   },
+  // Disable SWC minification for debugging purposes
+  swcMinify: false,
+  // Enable production source maps to better trace errors
+  productionBrowserSourceMaps: true,
   // ... any other configuration options
 };
 

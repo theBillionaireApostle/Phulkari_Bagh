@@ -60,7 +60,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch("/api/products");
+        const res = await fetch("https://phulkari-bagh-backend.vercel.app/api/products");
         if (!res.ok) {
           throw new Error("Failed to fetch products");
         }
@@ -89,7 +89,7 @@ export default function Home() {
     if (user) {
       async function fetchCart() {
         try {
-          const res = await fetch(`/api/cart?userId=${user.uid}`);
+          const res = await fetch(`https://phulkari-bagh-backend.vercel.app/api/cart?userId=${user.uid}`);
           if (!res.ok) {
             throw new Error("Failed to fetch cart");
           }
@@ -220,7 +220,7 @@ export default function Home() {
     setCartCount(newCartCount);
 
     try {
-      const res = await fetch("/api/cart", {
+      const res = await fetch("https://phulkari-bagh-backend.vercel.app/api/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -53,7 +53,7 @@ function OfflineModal({ onRetry }: { onRetry: () => void }) {
   return (
     <div style={modalStyles.overlay}>
       <div style={modalStyles.modal}>
-        <h2 style={modalStyles.modalTitle}>You&apos;re Offline</h2>
+        <h2 style={modalStyles.modalTitle}>You're Offline</h2>
         <p style={modalStyles.modalMessage}>Please check your internet connection and try again.</p>
         <button onClick={onRetry} style={modalStyles.modalButton}>Retry</button>
       </div>
@@ -71,7 +71,7 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Offline state and error modal state
+  // Offline and modal state
   const [isOffline, setIsOffline] = useState(false);
   const [modalError, setModalError] = useState<string | null>(null);
 
@@ -100,11 +100,11 @@ export default function AdminLoginPage() {
     }
 
     try {
-      // Note: To ensure cookies are set, include credentials in your fetch request.
+      // Important: include credentials to receive cookies from the backend.
       const res = await fetch("https://phulkari-bagh-backend.vercel.app/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // ensures cookies get set on the client
+        credentials: "include", // ensures cookies are accepted by the browser
         body: JSON.stringify({ username, password }),
       });
 
@@ -186,7 +186,7 @@ export default function AdminLoginPage() {
 // Inline styles using a style object.
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    minHeight: "calc(100vh - 140px)", // full height minus header and footer heights
+    minHeight: "calc(100vh - 140px)", // full height minus header/footer heights
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -230,7 +230,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   input: {
     padding: "0.6rem",
-    paddingRight: "2.5rem", // space for the icon inside the input
+    paddingRight: "2.5rem", // provide space for the icon
     borderRadius: "4px",
     border: "1px solid #ccc",
     fontSize: "1rem",
@@ -280,7 +280,7 @@ const headerStyles: Record<string, React.CSSProperties> = {
     left: 0,
     width: "100%",
     zIndex: 2000,
-    flexWrap: "wrap", // Allows wrapping on small screens
+    flexWrap: "wrap",
   },
   logo: {
     fontSize: "1.8rem",

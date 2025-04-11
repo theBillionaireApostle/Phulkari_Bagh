@@ -74,7 +74,7 @@ export default function CartPage() {
         try {
           setCartLoading(true);
           console.log("Fetching cart for user:", user.uid);
-          const res = await fetch(`http://localhost:3000/api/cart?userId=${user.uid}`);
+          const res = await fetch(`https://phulkari-bagh-backend.vercel.app/api/cart?userId=${user.uid}`);
           if (!res.ok) throw new Error("Failed to fetch cart");
           const data = await res.json();
           console.log("Fetched cart data:", data);
@@ -102,7 +102,7 @@ export default function CartPage() {
       if (user) {
         try {
           console.log("Updating cart for user:", user.uid, "with items:", cartItems);
-          await fetch("/api/cart", {
+          await fetch("https://phulkari-bagh-backend.vercel.app/api/cart", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId: user.uid, items: cartItems }),

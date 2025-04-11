@@ -18,7 +18,7 @@ const poppins = Poppins({
 
 // Next.js metadata
 export const metadata: Metadata = {
-  title: "House of Phulkari",
+  title: "Phulkari Bagh",
   description: "Experience vibrant Phulkari embroidery in all its glory.",
 };
 

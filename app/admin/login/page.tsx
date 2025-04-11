@@ -6,7 +6,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-// Header Component
+// Header Component – now more responsive
 function Header() {
   return (
     <header style={headerStyles.container}>
@@ -71,9 +71,8 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Offline state (true if browser is offline)
+  // Offline state and error modal state
   const [isOffline, setIsOffline] = useState(false);
-  // Whether to show an error modal (for login errors)
   const [modalError, setModalError] = useState<string | null>(null);
 
   // Listen for online/offline events.
@@ -94,7 +93,6 @@ export default function AdminLoginPage() {
     setModalError(null);
     setLoading(true);
 
-    // If offline, set an offline error modal.
     if (!navigator.onLine) {
       setModalError("You are offline. Please check your connection and try again.");
       setLoading(false);
@@ -102,17 +100,17 @@ export default function AdminLoginPage() {
     }
 
     try {
-      const res = await fetch("https://phulkari-bagh-backend.vercel.app/admin/login", {
+      // Note: To ensure cookies are set, include credentials in your fetch request.
+      const res = await fetch("https://phulkari-bagh-backend.vercel.app/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // ensures cookies get set on the client
         body: JSON.stringify({ username, password }),
       });
 
       if (!res.ok) {
         throw new Error("Invalid credentials");
       }
-
-      // On successful login, redirect to the admin dashboard.
       router.push("/admin");
     } catch (err: unknown) {
       let message = "Something went wrong.";
@@ -146,28 +144,19 @@ export default function AdminLoginPage() {
             </div>
             <div style={styles.fieldGroup}>
               <label style={styles.label}>Password</label>
-              <div style={{ position: "relative" }}>
+              <div style={styles.inputWrapper}>
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  style={{ ...styles.input, paddingRight: "2.5rem" }}
+                  style={styles.input}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  style={{
-                    position: "absolute",
-                    right: "0.75rem",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    background: "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 0,
-                  }}
+                  style={styles.iconButton}
                 >
                   <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                 </button>
@@ -194,21 +183,15 @@ export default function AdminLoginPage() {
   );
 }
 
-/**
- * 
- * Updated Styles
- * 
- */
+// Inline styles using a style object.
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    // Full height minus header (70px) and footer (70px) for perfect vertical centering
-    minHeight: "calc(100vh - 140px)",
+    minHeight: "calc(100vh - 140px)", // full height minus header and footer heights
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    // Provide uniform padding to avoid overlapping header/footer
-    paddingTop: "70px",   // space for fixed header
-    paddingBottom: "70px",// space for fixed footer
+    paddingTop: "70px", // reserve space for fixed header
+    paddingBottom: "70px", // reserve space for fixed footer
     backgroundColor: "#f9fafb",
   },
   loginCard: {
@@ -218,7 +201,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "2rem",
     borderRadius: "8px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    margin: "0 1rem", // small horizontal margin for mobile screens
+    margin: "0 1rem",
   },
   title: {
     marginBottom: "1.5rem",
@@ -247,9 +230,29 @@ const styles: Record<string, React.CSSProperties> = {
   },
   input: {
     padding: "0.6rem",
+    paddingRight: "2.5rem", // space for the icon inside the input
     borderRadius: "4px",
     border: "1px solid #ccc",
     fontSize: "1rem",
+    width: "100%",
+    boxSizing: "border-box",
+  },
+  inputWrapper: {
+    position: "relative",
+    width: "100%",
+  },
+  iconButton: {
+    position: "absolute",
+    right: "0.75rem",
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    padding: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   button: {
     padding: "0.8rem 1.5rem",
@@ -277,14 +280,18 @@ const headerStyles: Record<string, React.CSSProperties> = {
     left: 0,
     width: "100%",
     zIndex: 2000,
+    flexWrap: "wrap", // Allows wrapping on small screens
   },
   logo: {
     fontSize: "1.8rem",
     fontWeight: "bold",
+    marginBottom: "0.5rem",
   },
   navLinks: {
     display: "flex",
     gap: "1.5rem",
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
   link: {
     color: "#fff",

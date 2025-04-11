@@ -249,7 +249,7 @@ export default function Dashboard({ products: initialProducts }: DashboardProps)
   const handleDelete = useCallback(async (productId: string) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
-      const res = await fetch(`/api/products/${productId}`, { method: "DELETE" });
+      const res = await fetch(`https://phulkari-bagh-backend.vercel.app/api/products/${productId}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete the product");
       setProducts((prev) => prev.filter((p) => p._id !== productId));
       if (!toast.isActive("delete-" + productId))
@@ -263,7 +263,7 @@ export default function Dashboard({ products: initialProducts }: DashboardProps)
   const handleToggle = useCallback(async (product: Product) => {
     try {
       const updatedProduct = { ...product, published: !product.published };
-      const res = await fetch(`/api/products/${product._id}/toggle`, {
+      const res = await fetch(`https://phulkari-bagh-backend.vercel.app/api/products/${product._id}/toggle`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ published: updatedProduct.published }),
@@ -311,7 +311,7 @@ export default function Dashboard({ products: initialProducts }: DashboardProps)
       const uploadedGlobalImages: { url: string; publicId: string }[] = [];
       for (const file of formValues.images) {
         const base64 = await fileToBase64(file);
-        const res = await fetch("/api/products/upload", {
+        const res = await fetch("https://phulkari-bagh-backend.vercel.app/api/products/upload", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ imageBase64: base64, folder: "phulkari_products" }),
@@ -326,7 +326,7 @@ export default function Dashboard({ products: initialProducts }: DashboardProps)
         uploadedColorImages[color] = [];
         for (const file of files) {
           const base64 = await fileToBase64(file);
-          const res = await fetch("/api/products/upload", {
+          const res = await fetch("https://phulkari-bagh-backend.vercel.app/api/products/upload", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ imageBase64: base64, folder: "phulkari_products" }),
@@ -352,7 +352,7 @@ export default function Dashboard({ products: initialProducts }: DashboardProps)
         badge: formValues.badge,
         published: formValues.published,
       };
-      const res = await fetch("/api/products", {
+      const res = await fetch("https://phulkari-bagh-backend.vercel.app/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

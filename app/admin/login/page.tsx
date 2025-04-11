@@ -101,7 +101,7 @@ export default function AdminLoginPage() {
 
     try {
       // Note: To ensure cookies are set, include credentials in your fetch request.
-      const res = await fetch("https://phulkari-bagh-backend.vercel.app/api/admin/login", {
+      const res = await fetch("https://phulkari-bagh-backend.vercel.app/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // ensures cookies get set on the client

@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 
-
 // lib/db.ts
 import mongoose from 'mongoose'
 
 /**
- * It's best practice to store the connection string in an environment variable.
- * In Next.js, you typically have a .env.local file (ignored by git) containing:
+ * In Next.js, it’s best practice to store your MongoDB connection string
+ * in an environment variable. You typically define it in .env.local as:
  * MONGODB_URI="mongodb+srv://<username>:<password>@<cluster>/<dbname>?retryWrites=true&w=majority"
  */
 const MONGODB_URI = process.env.MONGODB_URI
@@ -16,8 +15,8 @@ if (!MONGODB_URI) {
 }
 
 /**
- * Global is used here to maintain a cached connection across hot reloads in development.
- * This prevents multiple connections to the database.
+ * We use a global cache to maintain a MongoDB connection across hot reloads
+ * in development, or even across multiple invocations in a serverless environment.
  */
 declare global {
   // eslint-disable-next-line no-var
@@ -30,33 +29,44 @@ declare global {
 let cached = global.mongooseCache
 
 if (!cached) {
+  console.log("Initializing mongooseCache...");
   cached = global.mongooseCache = { conn: null, promise: null }
 }
 
 /**
  * dbConnect
- * Connect to MongoDB using the cached connection if available.
+ * Connect to MongoDB, using the cache if a connection has already been established.
  */
 async function dbConnect(): Promise<mongoose.Connection> {
-  // If a connection is already established, return it
+  // Use an existing connection if available
   if (cached.conn) {
-    return cached.conn
+    console.log("Reusing cached connection. Connection state:", cached.conn.readyState);
+    return cached.conn;
   }
 
-  // If there's no existing connection, create a new one
+  // If no connection promise exists, create a new connection promise
   if (!cached.promise) {
+    console.log("No cached connection promise found. Establishing a new connection...");
     const opts: mongoose.ConnectOptions = {
       bufferCommands: false,
-      // Additional Mongoose options can be placed here
+      // You can add additional options here if needed.
     }
 
-    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
-      return mongoose.connection
-    })
+    cached.promise = mongoose.connect(MONGODB_URI!, opts)
+      .then((mongooseInstance) => {
+        console.log("New connection established. Connection state:", mongooseInstance.connection.readyState);
+        return mongooseInstance.connection;
+      })
+      .catch((error) => {
+        console.error("Error while connecting to the database:", error);
+        throw error;
+      });
   }
 
-  cached.conn = await cached.promise
-  return cached.conn
+  // Await the connection promise and cache the connection.
+  cached.conn = await cached.promise;
+  console.log("Connection obtained. Current connection state:", cached.conn.readyState);
+  return cached.conn;
 }
 
-export default dbConnect
+export default dbConnect;

@@ -102,7 +102,7 @@ export default function AdminLoginPage() {
     }
 
     try {
-      const res = await fetch("https://phulkari-bagh-backend.vercel.app/api/admin/login", {
+      const res = await fetch("https://phulkari-bagh-backend.vercel.app/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

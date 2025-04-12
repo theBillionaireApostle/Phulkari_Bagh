@@ -261,7 +261,7 @@ export default function Home() {
   const handleWhatsAppEnquiry = (product: Product) => {
     const message = encodeURIComponent(getWhatsAppMessage(product));
     window.open(
-      `https://api.whatsapp.com/send?phone=+919510394742&text=${message}`,
+      `https://api.whatsapp.com/send?phone=+919877785002&text=${message}`,
       "_blank"
     );
   };

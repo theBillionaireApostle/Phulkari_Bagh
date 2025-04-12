@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = process.env.JWT_SECRET || "CHANGE_THIS_TO_A_LONG_RANDOM_STRING";
+const SECRET_KEY = process.env.JWT_SECRET;
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

@@ -100,10 +100,12 @@ export default function AdminLoginPage() {
   }
 
   try {
-    // Remove credentials: "include" since we are returning a token in JSON, not a cookie
+    // If you are returning a token in JSON, credentials: "include" is not strictly needed
+    // but won't break anything if the server sets it up for CORS.
     const res = await fetch("https://phulkari-bagh-backend.vercel.app/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      // credentials: "include", // Only needed if you rely on cookies
       body: JSON.stringify({ username, password }),
     });
 
@@ -111,16 +113,20 @@ export default function AdminLoginPage() {
       throw new Error("Invalid credentials");
     }
 
-    // Extract the token from the response body (expecting { token: "..." })
+    // 1) Parse the JSON
     const data = await res.json();
+    // 2) Check that data.token exists
     if (!data.token) {
-      throw new Error("No token returned from server");
+      throw new Error("No token in response");
     }
 
-    // Store the token in localStorage (or your state management / secure store)
+    // 3) Store the token in localStorage
     localStorage.setItem("admin_jwt", data.token);
 
-    // Navigate to /admin
+    // 4) (Optional) console.log to verify
+    console.log("Token stored:", data.token);
+
+    // 5) Redirect or navigate as needed
     router.push("/admin");
   } catch (err: unknown) {
     let message = "Something went wrong.";

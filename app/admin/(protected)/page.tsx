@@ -1,28 +1,31 @@
-"use client"; // Mark this entire file as a client component
+"use client"; // This entire file is a client component
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // for redirect
 import Dashboard from "./Dashboard.client";
 
-// 1. Define a Product interface matching the data you expect
+// Define a Product interface matching what your API returns
 interface Product {
   _id: string;
   name: string;
   price: number;
-  // ... add other fields as needed
+  // ...other fields
 }
 
 export default function AdminDashboardPage() {
-  // 2. Use Product[] instead of any[]
   const [products, setProducts] = useState<Product[]>([]);
+  const router = useRouter(); // We'll use this to redirect client-side
 
   useEffect(() => {
     const token = localStorage.getItem("admin_jwt");
     if (!token) {
-      console.warn("No token found in localStorage.");
-      // Optionally redirect or show an error message
+      console.warn("No token found in localStorage. Redirecting to /admin/login...");
+      // Redirect the user to /admin/login if not logged in
+      router.push("/admin/login");
       return;
     }
 
+    // If token is found, fetch products with Authorization header
     fetch("https://phulkari-bagh-backend.vercel.app/api/products", {
       headers: {
         "Content-Type": "application/json",
@@ -37,14 +40,13 @@ export default function AdminDashboardPage() {
         return res.json();
       })
       .then((data: Product[]) => {
-        // 3. Data is typed as Product[], store in state
         setProducts(data);
       })
       .catch((err) => {
         console.error(err);
-        // handle fetch error — possibly show a message or redirect
+        // Optionally handle fetch error: show a message or re-redirect
       });
-  }, []);
+  }, [router]);
 
   return <Dashboard products={products} />;
 }

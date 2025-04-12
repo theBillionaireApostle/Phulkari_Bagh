@@ -90,9 +90,8 @@ export default function CartPage() {
         }
       }
     }
-    if (cartItems.length > 0) {
-      updateCart();
-    }
+    // Always update the cart—even if it becomes empty.
+    updateCart();
   }, [cartItems, user]);
 
   // If auth or cart is still loading, show a loader
@@ -230,7 +229,10 @@ export default function CartPage() {
             {menuOpen && (
               <div className={styles.dropdownMenu}>
                 <Link href="/cart" className={styles.dropdownItem}>
-                  Cart {cartItems.length > 0 && <span className={styles.badge}>{cartItems.length}</span>}
+                  Cart{" "}
+                  {cartItems.length > 0 && (
+                    <span className={styles.badge}>{cartItems.length}</span>
+                  )}
                 </Link>
                 <div
                   className={styles.dropdownItem}

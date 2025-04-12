@@ -20,6 +20,9 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Phulkari Bagh",
   description: "Experience vibrant Phulkari embroidery in all its glory.",
+  icons: {
+    icon: '/favicon.png', // or '/favicon.png'
+  },
 };
 
 export default function RootLayout({

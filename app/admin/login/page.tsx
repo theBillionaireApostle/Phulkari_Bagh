@@ -53,7 +53,7 @@ function OfflineModal({ onRetry }: { onRetry: () => void }) {
   return (
     <div style={modalStyles.overlay}>
       <div style={modalStyles.modal}>
-        <h2 style={modalStyles.modalTitle}>You're Offline</h2>
+        <h2 style={modalStyles.modalTitle}>You&apos;re Offline</h2>
         <p style={modalStyles.modalMessage}>Please check your internet connection and try again.</p>
         <button onClick={onRetry} style={modalStyles.modalButton}>Retry</button>
       </div>

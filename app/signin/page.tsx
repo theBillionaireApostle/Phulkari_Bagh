@@ -44,7 +44,7 @@ export default function SignInPage() {
     async function createUserInDB() {
       if (user) {
         try {
-          const res = await fetch("/api/users", {
+          const res = await fetch("https://phulkari-bagh-backend.vercel.app/api/users", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

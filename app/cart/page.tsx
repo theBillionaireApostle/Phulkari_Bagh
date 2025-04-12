@@ -10,50 +10,22 @@ import { onAuthStateChanged, User, signOut } from "firebase/auth";
 import { auth } from "../firebaseClient";
 import styles from "./cart.module.css";
 
-// Define a TypeScript interface for your cart items.
-// Now includes an optional "image" property.
+// Define a TypeScript interface for your cart items
 interface CartItem {
   productId: string;
   name: string;
   price: number;
   quantity: number;
-  image?: string;
+  image?: string; // Optional image field
 }
-
-// For demonstration purposes, if no cart is saved in the DB, we use sample cart items.
-const sampleCartItems: CartItem[] = [
-  {
-    productId: "1",
-    name: "Cotton Chikankari Kurta - White",
-    price: 3650,
-    quantity: 1,
-    image: "/images/phulkari_kurta_white.webp",
-  },
-  {
-    productId: "2",
-    name: "Phulkari Bag",
-    price: 1299,
-    quantity: 2,
-    image: "/images/phulkari_bag.webp",
-  },
-  {
-    productId: "3",
-    name: "Phulkari Stole",
-    price: 999,
-    quantity: 1,
-    image: "/images/phulkari_stole.avif",
-  },
-];
 
 export default function CartPage() {
   // Firebase authentication state
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
-  
-  // Separate cart loading state
-  const [cartLoading, setCartLoading] = useState(true);
 
-  // Cart state and error
+  // Cart loading & data
+  const [cartLoading, setCartLoading] = useState(true);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [error, setError] = useState("");
 
@@ -67,7 +39,7 @@ export default function CartPage() {
     return () => unsubscribe();
   }, []);
 
-  // Load cart items from backend via API
+  // Load cart items from backend
   useEffect(() => {
     async function fetchCart() {
       if (user) {
@@ -78,7 +50,8 @@ export default function CartPage() {
           if (!res.ok) throw new Error("Failed to fetch cart");
           const data = await res.json();
           console.log("Fetched cart data:", data);
-          setCartItems(data.items || sampleCartItems);
+          // Remove placeholder fallback; just use data.items or []
+          setCartItems(data.items || []);
         } catch (error: unknown) {
           if (error instanceof Error) {
             console.error("Error fetching cart:", error.message);
@@ -87,7 +60,8 @@ export default function CartPage() {
             console.error("Error fetching cart:", error);
             setError("Unable to fetch cart data.");
           }
-          setCartItems(sampleCartItems);
+          // If there's an error, default to an empty array
+          setCartItems([]);
         } finally {
           setCartLoading(false);
         }
@@ -96,7 +70,7 @@ export default function CartPage() {
     fetchCart();
   }, [user]);
 
-  // Save cart to backend when cart items change.
+  // Save cart to backend whenever cartItems change
   useEffect(() => {
     async function updateCart() {
       if (user) {
@@ -121,7 +95,7 @@ export default function CartPage() {
     }
   }, [cartItems, user]);
 
-  // Render full-page loader if auth or cart is still loading.
+  // If auth or cart is still loading, show a loader
   if (authLoading || cartLoading) {
     return (
       <div className={styles.loadingContainer}>
@@ -131,7 +105,7 @@ export default function CartPage() {
     );
   }
 
-  // If no user is logged in, show a sign-in required message.
+  // If no user is logged in, show sign-in message
   if (!user) {
     return (
       <div className={styles.authRequiredContainer}>
@@ -146,18 +120,18 @@ export default function CartPage() {
     );
   }
 
-  // Compute the total price.
+  // Compute the total price
   const totalPrice = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
-  // Remove an item from the cart.
+  // Remove item from cart
   const removeItem = (productId: string) => {
     setCartItems((prev) => prev.filter((item) => item.productId !== productId));
   };
 
-  // Increment the quantity for a given product.
+  // Increase quantity
   const incrementQuantity = (productId: string) => {
     setCartItems((prev) =>
       prev.map((item) =>
@@ -168,7 +142,7 @@ export default function CartPage() {
     );
   };
 
-  // Decrement the quantity; if quantity becomes 0, remove the item.
+  // Decrease quantity; remove if 0
   const decrementQuantity = (productId: string) => {
     setCartItems((prev) =>
       prev.reduce<CartItem[]>((acc, item) => {
@@ -177,7 +151,6 @@ export default function CartPage() {
           if (newQuantity > 0) {
             acc.push({ ...item, quantity: newQuantity });
           }
-          // When newQuantity is 0, skip (i.e. remove).
         } else {
           acc.push(item);
         }
@@ -186,7 +159,7 @@ export default function CartPage() {
     );
   };
 
-  // Build dynamic WhatsApp message using cart details.
+  // Build dynamic WhatsApp message
   const getWhatsAppMessage = (): string => {
     let message = "I'm interested in the following items:\n";
     cartItems.forEach((item, index) => {
@@ -196,24 +169,29 @@ export default function CartPage() {
     return message;
   };
 
-  // Handler for WhatsApp enquiry button.
+  // Handler for WhatsApp enquiry
   const handleWhatsAppEnquiry = () => {
     const message = encodeURIComponent(getWhatsAppMessage());
-    const phone = "+919510394742"; // Replace with your support phone number.
+    const phone = "+919510394742";
     const url = `https://api.whatsapp.com/send?phone=${phone}&text=${message}`;
     window.open(url, "_blank");
   };
 
-  // Header Component with absolute paths for navigation.
+  // Additional user navigation
   const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const toggleMenu = () => setMenuOpen((prev) => !prev);
+
     const getInitials = (user: User) => {
       if (user.displayName) {
         const names = user.displayName.split(" ");
-        return names.length > 1
-          ? names[0].charAt(0).toUpperCase() + names[names.length - 1].charAt(0).toUpperCase()
-          : names[0].charAt(0).toUpperCase();
+        if (names.length > 1) {
+          return (
+            names[0].charAt(0).toUpperCase() +
+            names[names.length - 1].charAt(0).toUpperCase()
+          );
+        }
+        return names[0].charAt(0).toUpperCase();
       }
       return user.email ? user.email.charAt(0).toUpperCase() : "U";
     };
@@ -295,7 +273,7 @@ export default function CartPage() {
                         alt={item.name}
                         width={100}
                         height={100}
-                        objectFit="cover"
+                        style={{ objectFit: "cover" }}
                       />
                     ) : (
                       <div className={styles.imagePlaceholder}>No Image</div>

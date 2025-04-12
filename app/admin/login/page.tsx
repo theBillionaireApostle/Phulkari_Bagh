@@ -100,7 +100,7 @@ export default function AdminLoginPage() {
   }
 
   try {
-    // We do NOT include credentials, since we're not relying on cookies anymore.
+    // Remove credentials: "include" since we are returning a token in JSON, not a cookie
     const res = await fetch("https://phulkari-bagh-backend.vercel.app/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -111,16 +111,16 @@ export default function AdminLoginPage() {
       throw new Error("Invalid credentials");
     }
 
-    // Extract the token from the response body
-    const { token } = await res.json();
-    if (!token) {
-      throw new Error("No token returned from the server");
+    // Extract the token from the response body (expecting { token: "..." })
+    const data = await res.json();
+    if (!data.token) {
+      throw new Error("No token returned from server");
     }
 
-    // Store the token in localStorage (or sessionStorage, or a global store if you prefer)
-    localStorage.setItem("admin_jwt", token);
+    // Store the token in localStorage (or your state management / secure store)
+    localStorage.setItem("admin_jwt", data.token);
 
-    // Redirect to /admin (middleware will check the token in the Authorization header)
+    // Navigate to /admin
     router.push("/admin");
   } catch (err: unknown) {
     let message = "Something went wrong.";

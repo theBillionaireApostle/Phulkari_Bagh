@@ -3,19 +3,26 @@
 import { useEffect, useState } from "react";
 import Dashboard from "./Dashboard.client";
 
+// 1. Define a Product interface matching the data you expect
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  // ... add other fields as needed
+}
+
 export default function AdminDashboardPage() {
-  const [products, setProducts] = useState<any[]>([]);
+  // 2. Use Product[] instead of any[]
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    // 1. Read token from localStorage
     const token = localStorage.getItem("admin_jwt");
     if (!token) {
-      // handle no token — maybe redirect or show an error
       console.warn("No token found in localStorage.");
+      // Optionally redirect or show an error message
       return;
     }
 
-    // 2. Fetch products with Authorization header
     fetch("https://phulkari-bagh-backend.vercel.app/api/products", {
       headers: {
         "Content-Type": "application/json",
@@ -29,8 +36,8 @@ export default function AdminDashboardPage() {
         }
         return res.json();
       })
-      .then((data) => {
-        // 3. Store them in state
+      .then((data: Product[]) => {
+        // 3. Data is typed as Product[], store in state
         setProducts(data);
       })
       .catch((err) => {

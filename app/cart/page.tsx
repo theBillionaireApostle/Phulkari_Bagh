@@ -171,7 +171,7 @@ export default function CartPage() {
   // Handler for WhatsApp enquiry
   const handleWhatsAppEnquiry = () => {
     const message = encodeURIComponent(getWhatsAppMessage());
-    const phone = "+91‪9877785002‬";
+    const phone = "+919041798129‬";
     const url = `https://api.whatsapp.com/send?phone=${phone}&text=${message}`;
     window.open(url, "_blank");
   };

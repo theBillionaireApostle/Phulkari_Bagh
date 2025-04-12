@@ -8,11 +8,16 @@ export const metadata = {
 
 // Server-side function to fetch products.
 async function getProducts() {
-  // Use NEXT_PUBLIC_SITE_URL if provided; otherwise, default to localhost.
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  // Create an absolute URL using the URL constructor.
+  // Use the provided production backend URL
+  const baseUrl = "https://phulkari-bagh-backend.vercel.app";
   const url = new URL("/api/products", baseUrl).toString();
-  const res = await fetch(url, { cache: "no-store" });
+  
+  // Optionally add credentials if your API requires them
+  const res = await fetch(url, {
+    cache: "no-store",
+    // credentials: "include", // Uncomment this line if cookies or credentials are needed
+  });
+  
   if (!res.ok) {
     throw new Error("Failed to fetch products");
   }

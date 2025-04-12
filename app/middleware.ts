@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow access to /admin/login or any other route that doesn't require auth
-  if (pathname.startsWith("/admin/login")) {
+  if (pathname.startsWith("/admin/login") || pathname === "/admin") {
     return NextResponse.next();
   }
 

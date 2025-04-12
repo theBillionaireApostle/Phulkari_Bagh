@@ -88,41 +88,50 @@ export default function AdminLoginPage() {
   }, []);
 
   async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setModalError(null);
-    setLoading(true);
+  e.preventDefault();
+  setError(null);
+  setModalError(null);
+  setLoading(true);
 
-    if (!navigator.onLine) {
-      setModalError("You are offline. Please check your connection and try again.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      // Important: include credentials to receive cookies from the backend.
-      const res = await fetch("https://phulkari-bagh-backend.vercel.app/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include", // ensures cookies are accepted by the browser
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Invalid credentials");
-      }
-      router.push("/admin");
-    } catch (err: unknown) {
-      let message = "Something went wrong.";
-      if (err instanceof Error) {
-        message = err.message;
-      }
-      setModalError(message);
-    } finally {
-      setLoading(false);
-    }
+  if (!navigator.onLine) {
+    setModalError("You are offline. Please check your connection and try again.");
+    setLoading(false);
+    return;
   }
 
+  try {
+    // We do NOT include credentials, since we're not relying on cookies anymore.
+    const res = await fetch("https://phulkari-bagh-backend.vercel.app/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Invalid credentials");
+    }
+
+    // Extract the token from the response body
+    const { token } = await res.json();
+    if (!token) {
+      throw new Error("No token returned from the server");
+    }
+
+    // Store the token in localStorage (or sessionStorage, or a global store if you prefer)
+    localStorage.setItem("admin_jwt", token);
+
+    // Redirect to /admin (middleware will check the token in the Authorization header)
+    router.push("/admin");
+  } catch (err: unknown) {
+    let message = "Something went wrong.";
+    if (err instanceof Error) {
+      message = err.message;
+    }
+    setModalError(message);
+  } finally {
+    setLoading(false);
+  }
+}
   return (
     <>
       <Header />
